@@ -47,6 +47,7 @@
     <Compile Include="Maze\Core\Grid.cs" />
     <Compile Include="Maze\Generate\HuntAndKill.cs" />
     <Compile Include="Maze\Generate\MazeGenerator.cs" />
+    <Compile Include="Maze\Generate\RecursiveBacktracking.cs" />
     <Compile Include="Maze\Maze.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

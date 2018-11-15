@@ -17,7 +17,7 @@
 
     public void Walk(Cell curr)
     {
-        Cell next = m_grid.ChoiceNeighbor(curr, 0);
+        Cell next = m_grid.ChoiceNeighbor(curr);
 
         while (next.IsValid())
         {
@@ -27,7 +27,7 @@
             m_grid.SetReverseDir(next, dir);
 
             curr = next;
-            next = m_grid.ChoiceNeighbor(curr, 0);
+            next = m_grid.ChoiceNeighbor(curr);
         }
     }
 

@@ -100,57 +100,82 @@ public class Grid
         m_grid[Cell.ToIndex(cell.x, cell.y, Width)] |= (int)revDir;
     }
 
-    public Cell ChoiceNeighbor(Cell origin, System.Predicate<int> match)
+    public Cell ChoiceNeighbor(Cell origin)
+    {
+        return ChoiceNeighbor(origin, val => val == 0);
+    }
+
+    public Cell ChoiceNeighbor(Cell origin, Predicate<int> match)
     {
         Cell[] neighbors = FindNeighbors(origin, match);
 
         if (neighbors.Length > 0)
         {
-            // array shuffle
-            for (int i = 0; i < neighbors.Length; ++i)
-            {
-                int n = m_rnd.Next(neighbors.Length);
-
-                Cell temp = neighbors[i];
-                neighbors[i] = neighbors[n];
-                neighbors[n] = temp;
-            }
-
             return neighbors[0];
         }
 
         return Cell.invalid;
     }
 
-    public Cell ChoiceNeighbor(Cell origin, int value = 0)
+    public Cell[] GetNeighbors(Cell origin)
     {
-        Cell[] neighbors = GetNeighbors(origin);
+        List<Cell> neighbors = new List<Cell>();
 
-        if (neighbors.Length > 0)
+        if (origin.x > 0)
         {
-            // array shuffle
-            for (int i = 0; i < neighbors.Length; ++i)
-            {
-                int n = m_rnd.Next(neighbors.Length);
+            int x = origin.x - 1;
+            int y = origin.y;
 
-                Cell temp = neighbors[i];
-                neighbors[i] = neighbors[n];
-                neighbors[n] = temp;
-            }
-
-            for (int i = 0; i < neighbors.Length; ++i)
-            {
-                if (neighbors[i].value == value)
-                {
-                    return neighbors[i];
-                }
-            }
+            neighbors.Add(new Cell(x, y, GetValue(x, y)));
         }
 
-        return Cell.invalid;
+        if (origin.x < Width - 1)
+        {
+            int x = origin.x + 1;
+            int y = origin.y;
+
+            neighbors.Add(new Cell(x, y, GetValue(x, y)));
+        }
+
+        if (origin.y > 0 )
+        {
+            int x = origin.x;
+            int y = origin.y - 1;
+
+            neighbors.Add(new Cell(x, y, GetValue(x, y)));
+        }
+
+        if (origin.y < Height - 1)
+        {
+            int x = origin.x;
+            int y = origin.y + 1;
+
+            neighbors.Add(new Cell(x, y, GetValue(x, y)));
+        }
+
+        if (neighbors.Count > 1)
+        {
+            Cell[] shuffled = new Cell[neighbors.Count];
+
+            int length = shuffled.Length;
+
+            for (int i = 0; i < length; ++i)
+            {
+                int index = m_rnd.Next(length - i);
+
+                shuffled[i] = neighbors[index];
+                neighbors.RemoveAt(index);
+            }
+
+            return shuffled;
+        }
+        else
+        {
+            return neighbors.ToArray();
+        }
     }
 
-    public Cell[] FindNeighbors(Cell origin, System.Predicate<int> match)
+    public Cell[] FindNeighbors(Cell origin, Predicate<int> match)
     {
         List<Cell> neighbors = new List<Cell>();
 
@@ -186,46 +211,26 @@ public class Grid
             neighbors.Add(new Cell(x, y, GetValue(x, y)));
         }
 
-        return neighbors.ToArray();
-    }
-
-    public Cell[] GetNeighbors(Cell origin)
-    {
-        List<Cell> neighbors = new List<Cell>();
-
-        if (origin.x > 0)
+        if (neighbors.Count > 1)
         {
-            int x = origin.x - 1;
-            int y = origin.y;
+            Cell[] shuffled = new Cell[neighbors.Count];
 
-            neighbors.Add(new Cell(x, y, GetValue(x, y)));
+            int length = shuffled.Length;
+
+            for (int i = 0; i < length; ++i)
+            {
+                int index = m_rnd.Next(length - i);
+
+                shuffled[i] = neighbors[index];
+                neighbors.RemoveAt(index);
+            }
+
+            return shuffled;
         }
-
-        if (origin.x < Width - 1)
+        else
         {
-            int x = origin.x + 1;
-            int y = origin.y;
-
-            neighbors.Add(new Cell(x, y, GetValue(x, y)));
+            return neighbors.ToArray();
         }
-
-        if (origin.y > 0)
-        {
-            int x = origin.x;
-            int y = origin.y - 1;
-
-            neighbors.Add(new Cell(x, y, GetValue(x, y)));
-        }
-
-        if (origin.y < Height - 1)
-        {
-            int x = origin.x;
-            int y = origin.y + 1;
-
-            neighbors.Add(new Cell(x, y, GetValue(x, y)));
-        }
-
-        return neighbors.ToArray();
     }
 
     public override string ToString()
@@ -236,7 +241,7 @@ public class Grid
         {
             for (int x = 0; x < Width; ++x)
             {
-                sb.Append(m_grid[Cell.ToIndex(x, y, Width)] + "\t");
+                sb.Append(m_grid[Cell.ToIndex(x, y, Width)] + ",");
             }
 
             sb.AppendLine();
