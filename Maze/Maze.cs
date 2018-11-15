@@ -12,7 +12,7 @@
         Grid grid = m_gen.Generate(w, h);
 
         m_grid = new Grid(grid.Width * 2 + 1, grid.Height * 2 + 1);
-        m_grid.Fill(99);
+        m_grid.Fill(Cell.State.Wall);
 
         for (int i = 0; i < grid.Length; ++i)
         {
@@ -21,26 +21,26 @@
             cell.x = cell.x * 2 + 1;
             cell.y = cell.y * 2 + 1;
 
-            m_grid.SetValue(cell.x, cell.y, 0);
+            m_grid.SetState(cell.x, cell.y, Cell.State.None);
 
-            if ((cell.value & (int)Cell.Dir.W) != 0)
+            if ((cell.state & Cell.State.W) != 0)
             {
-                m_grid.SetValue(cell.x - 1, cell.y, 0);
+                m_grid.SetState(cell.x - 1, cell.y, Cell.State.None);
             }
 
-            if ((cell.value & (int)Cell.Dir.E) != 0)
+            if ((cell.state & Cell.State.E) != 0)
             {
-                m_grid.SetValue(cell.x + 1, cell.y, 0);
+                m_grid.SetState(cell.x + 1, cell.y, Cell.State.None);
             }
 
-            if ((cell.value & (int)Cell.Dir.N) != 0)
+            if ((cell.state & Cell.State.N) != 0)
             {
-                m_grid.SetValue(cell.x, cell.y - 1, 0);
+                m_grid.SetState(cell.x, cell.y - 1, Cell.State.None);
             }
 
-            if ((cell.value & (int)Cell.Dir.S) != 0)
+            if ((cell.state & Cell.State.S) != 0)
             {
-                m_grid.SetValue(cell.x, cell.y + 1, 0);
+                m_grid.SetState(cell.x, cell.y + 1, Cell.State.None);
             }
         }
     }

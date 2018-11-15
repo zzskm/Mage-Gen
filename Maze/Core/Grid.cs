@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 public class Grid
 {
@@ -8,33 +7,33 @@ public class Grid
     public int Width { get; protected set; }
     public int Height { get; protected set; }
 
-    private Random m_rnd;
+    private System.Random m_rnd;
 
-    private int[] m_grid;
+    private Cell.State[] m_grid;
 
-    public int this[int index]
+    public Cell.State this[int index]
     {
         get { return m_grid[index]; }
         set { m_grid[index] = value; }
     }
 
-    public int this[int x, int y]
+    public Cell.State this[int x, int y]
     {
-        get { return GetValue(x, y); }
-        set { SetValue(x, y, value); }
+        get { return GetState(x, y); }
+        set { SetState(x, y, value); }
     }
 
-    public int this[Cell c]
+    public Cell.State this[Cell c]
     {
-        get { return GetValue(c.x, c.y); }
-        set { SetValue(c.x, c.y, value); }
+        get { return GetState(c.x, c.y); }
+        set { SetState(c.x, c.y, value); }
     }
 
     public Grid(int w, int h)
     {
-        m_rnd = new Random();
+        m_rnd = new System.Random();
 
-        m_grid = new int[w * h];
+        m_grid = new Cell.State[w * h];
 
         Length = m_grid.Length;
 
@@ -45,7 +44,7 @@ public class Grid
     public Cell GetCell(int index)
     {
         Cell cell = Cell.FromIndex(index, Width);
-        cell.value = m_grid[index];
+        cell.state = m_grid[index];
 
         return cell;
     }
@@ -55,10 +54,10 @@ public class Grid
         int x = m_rnd.Next(Width);
         int y = m_rnd.Next(Height);
 
-        return new Cell(x, y, GetValue(x, y));
+        return new Cell(x, y, GetState(x, y));
     }
 
-    public void Fill(int value)
+    public void Fill(Cell.State value)
     {
         for (int i = 0; i < m_grid.Length; ++i)
         {
@@ -66,46 +65,27 @@ public class Grid
         }
     }
 
-    public int GetValue(int x, int y)
+    public Cell.State GetState(int x, int y)
     {
         return m_grid[Cell.ToIndex(x, y, Width)];
     }
 
-    public void SetValue(int x, int y, int value)
+    public void SetState(int x, int y, Cell.State state)
     {
-        m_grid[Cell.ToIndex(x, y, Width)] = value;
+        m_grid[Cell.ToIndex(x, y, Width)] = state;
     }
 
-    public void SetDir(Cell cell, Cell.Dir dir)
+    public void AddState(Cell cell, Cell.State state)
     {
-        m_grid[Cell.ToIndex(cell.x, cell.y, Width)] |= (int)dir;
-    }
-
-    public void SetReverseDir(Cell cell, Cell.Dir dir)
-    {
-        Cell.Dir revDir;
-
-        switch (dir)
-        {
-            case Cell.Dir.N: revDir = Cell.Dir.S; break;
-            case Cell.Dir.S: revDir = Cell.Dir.N; break;
-            case Cell.Dir.E: revDir = Cell.Dir.W; break;
-            case Cell.Dir.W: revDir = Cell.Dir.E; break;
-
-            default:
-                revDir = Cell.Dir.None;
-                break;
-        }
-
-        m_grid[Cell.ToIndex(cell.x, cell.y, Width)] |= (int)revDir;
+        m_grid[Cell.ToIndex(cell.x, cell.y, Width)] |= state;
     }
 
     public Cell ChoiceNeighbor(Cell origin)
     {
-        return ChoiceNeighbor(origin, val => val == 0);
+        return ChoiceNeighbor(origin, st => st == Cell.State.None);
     }
 
-    public Cell ChoiceNeighbor(Cell origin, Predicate<int> match)
+    public Cell ChoiceNeighbor(Cell origin, System.Predicate<Cell.State> match)
     {
         Cell[] neighbors = FindNeighbors(origin, match);
 
@@ -126,7 +106,7 @@ public class Grid
             int x = origin.x - 1;
             int y = origin.y;
 
-            neighbors.Add(new Cell(x, y, GetValue(x, y)));
+            neighbors.Add(new Cell(x, y, GetState(x, y)));
         }
 
         if (origin.x < Width - 1)
@@ -134,7 +114,7 @@ public class Grid
             int x = origin.x + 1;
             int y = origin.y;
 
-            neighbors.Add(new Cell(x, y, GetValue(x, y)));
+            neighbors.Add(new Cell(x, y, GetState(x, y)));
         }
 
         if (origin.y > 0 )
@@ -142,7 +122,7 @@ public class Grid
             int x = origin.x;
             int y = origin.y - 1;
 
-            neighbors.Add(new Cell(x, y, GetValue(x, y)));
+            neighbors.Add(new Cell(x, y, GetState(x, y)));
         }
 
         if (origin.y < Height - 1)
@@ -150,7 +130,7 @@ public class Grid
             int x = origin.x;
             int y = origin.y + 1;
 
-            neighbors.Add(new Cell(x, y, GetValue(x, y)));
+            neighbors.Add(new Cell(x, y, GetState(x, y)));
         }
 
         if (neighbors.Count > 1)
@@ -175,40 +155,40 @@ public class Grid
         }
     }
 
-    public Cell[] FindNeighbors(Cell origin, Predicate<int> match)
+    public Cell[] FindNeighbors(Cell origin, System.Predicate<Cell.State> match)
     {
         List<Cell> neighbors = new List<Cell>();
 
-        if (origin.x > 0 && match(GetValue(origin.x - 1, origin.y)))
+        if (origin.x > 0 && match(GetState(origin.x - 1, origin.y)))
         {
             int x = origin.x - 1;
             int y = origin.y;
 
-            neighbors.Add(new Cell(x, y, GetValue(x, y)));
+            neighbors.Add(new Cell(x, y, GetState(x, y)));
         }
 
-        if (origin.x < Width - 1 && match(GetValue(origin.x + 1, origin.y)))
+        if (origin.x < Width - 1 && match(GetState(origin.x + 1, origin.y)))
         {
             int x = origin.x + 1;
             int y = origin.y;
 
-            neighbors.Add(new Cell(x, y, GetValue(x, y)));
+            neighbors.Add(new Cell(x, y, GetState(x, y)));
         }
 
-        if (origin.y > 0 && match(GetValue(origin.x, origin.y - 1)))
+        if (origin.y > 0 && match(GetState(origin.x, origin.y - 1)))
         {
             int x = origin.x;
             int y = origin.y - 1;
 
-            neighbors.Add(new Cell(x, y, GetValue(x, y)));
+            neighbors.Add(new Cell(x, y, GetState(x, y)));
         }
 
-        if (origin.y < Height - 1 && match(GetValue(origin.x, origin.y + 1)))
+        if (origin.y < Height - 1 && match(GetState(origin.x, origin.y + 1)))
         {
             int x = origin.x;
             int y = origin.y + 1;
 
-            neighbors.Add(new Cell(x, y, GetValue(x, y)));
+            neighbors.Add(new Cell(x, y, GetState(x, y)));
         }
 
         if (neighbors.Count > 1)

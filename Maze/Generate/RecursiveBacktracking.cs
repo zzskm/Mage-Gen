@@ -23,10 +23,10 @@
                     continue;
                 }
 
-                Cell.Dir dir = Cell.GetDir(curr, next);
+                Cell.State dir = Cell.GetDir(curr, next);
 
-                m_grid.SetDir(curr, dir);
-                m_grid.SetReverseDir(next, dir);
+                m_grid.AddState(curr, dir);
+                m_grid.AddState(next, Cell.ToOppositeDir(dir));
 
                 CarvePassages(next);
             }

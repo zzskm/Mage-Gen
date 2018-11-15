@@ -21,10 +21,10 @@
 
         while (next.IsValid())
         {
-            Cell.Dir dir = Cell.GetDir(curr, next);
+            Cell.State dir = Cell.GetDir(curr, next);
 
-            m_grid.SetDir(curr, dir);
-            m_grid.SetReverseDir(next, dir);
+            m_grid.AddState(curr, dir);
+            m_grid.AddState(next, Cell.ToOppositeDir(dir));
 
             curr = next;
             next = m_grid.ChoiceNeighbor(curr);
@@ -35,29 +35,28 @@
     {
         for (int i = 0; i < m_grid.Length; ++i)
         {
-            Cell origin = m_grid.GetCell(i);
+            Cell curr = m_grid.GetCell(i);
 
             if (m_grid[i] != 0)
             {
                 continue;
             }
 
+            Cell next = m_grid.ChoiceNeighbor(curr, st => st != Cell.State.None);
 
-            Cell neighbor = m_grid.ChoiceNeighbor(origin, val => val != 0);
-
-            if (!neighbor.IsValid())
+            if (!next.IsValid())
             {
                 continue;
             }
 
-            Cell.Dir dir = Cell.GetDir(origin, neighbor);
+            Cell.State dir = Cell.GetDir(curr, next);
 
-            m_grid.SetDir(origin, dir);
-            m_grid.SetReverseDir(neighbor, dir);
+            m_grid.AddState(curr, dir);
+            m_grid.AddState(next, Cell.ToOppositeDir(dir));
 
-            origin.value = m_grid[origin];
+            curr.state = m_grid[curr];
 
-            return origin;
+            return curr;
         }
 
         return Cell.invalid;
