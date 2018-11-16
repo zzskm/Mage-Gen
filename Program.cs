@@ -10,7 +10,8 @@ namespace Maze_Gen
 
             Maze mz = new Maze();
 
-            mz.m_gen = new Prims();
+            mz.m_gen = new Kruskals();
+            //mz.m_gen = new Prims();
             //mz.m_gen = new RecursiveBacktracking();
             //mz.m_gen = new HuntAndKill();
 

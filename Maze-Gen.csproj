@@ -46,6 +46,7 @@
     <Compile Include="Maze\Core\Cell.cs" />
     <Compile Include="Maze\Core\Grid.cs" />
     <Compile Include="Maze\Generate\HuntAndKill.cs" />
+    <Compile Include="Maze\Generate\Kruskals.cs" />
     <Compile Include="Maze\Generate\MazeGenerator.cs" />
     <Compile Include="Maze\Generate\Prims.cs" />
     <Compile Include="Maze\Generate\RecursiveBacktracking.cs" />

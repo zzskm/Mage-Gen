@@ -1,10 +1,10 @@
 # Maze Generation Algorithms
-## Hunt-and-Kill
-## Recursive Backtracking
-## Prim's Algorithm
+### Hunt-and-Kill
+### Recursive Backtracking
+### Prim's Algorithm
+### Kruskal's Algorithm
 
----
-### References
+## References
 - https://www.jamisbuck.org/mazes/
 - https://github.com/theJollySin/mazelib
 - https://wiki.hurna.io/
