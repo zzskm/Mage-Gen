@@ -10,6 +10,7 @@
 
         CarvePassages(m_grid.GetRandom());
 
+        SetCurr(Cell.invalid);
         m_owner.TakeSnapshot();
 
         return m_grid;
@@ -17,6 +18,9 @@
 
     public void CarvePassages(Cell curr)
     {
+        SetCurr(curr);
+        m_owner.TakeSnapshot();
+
         Cell[] neighbors = m_grid.GetNeighbors(curr);
 
         if (neighbors.Length > 0)
@@ -34,8 +38,6 @@
 
                 m_grid.AddState(curr, dir);
                 m_grid.AddState(next, Cell.ToOppositeDir(dir));
-
-                m_owner.TakeSnapshot();
 
                 CarvePassages(next);
             }

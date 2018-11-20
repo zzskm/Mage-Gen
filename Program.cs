@@ -9,41 +9,81 @@ namespace Maze_Gen
         {
             Console.OutputEncoding = System.Text.Encoding.UTF8;
 
+            Console.WriteLine("Select one of the algorithms:");
+            Console.WriteLine("1. Hunt-and-Kill");
+            Console.WriteLine("2. Recursive Backtracking");
+            Console.WriteLine("3. Prim's Algorithm");
+            Console.WriteLine("4. Kruskal's Algorithm");
+
+            Console.Write("> Enter your selection (1-4): ");
+            int sel = Convert.ToInt32(Console.ReadLine());
+
             Maze mz = new Maze();
 
-            mz.m_gen = new Kruskals(mz);
-            //mz.m_gen = new Prims(mz);
-            //mz.m_gen = new RecursiveBacktracking(mz);
-            //mz.m_gen = new HuntAndKill(mz);
+            switch (sel)
+            {
+                case 1: mz.m_gen = new HuntAndKill(mz); break;
+                case 2: mz.m_gen = new RecursiveBacktracking(mz); break;
+                case 3: mz.m_gen = new Prims(mz); break;
+                case 4: mz.m_gen = new Kruskals(mz); break;
 
-            Console.WriteLine(mz.m_gen.GetType().Name);
+                default:
+                    Console.WriteLine("Invalid Selection!");
+                    return;
+            }
 
             int w, h;
 
-            Console.Write("Width : ");
+            Console.Write("> Width : ");
             w = Convert.ToInt32(Console.ReadLine());
 
-            Console.Write("Height : ");
+            Console.Write("> Height : ");
             h = Convert.ToInt32(Console.ReadLine());
+
+            Console.Write("> Fps : ");
+
+            //int fps = Convert.ToInt32(Console.ReadLine());
+            //int interval = 1000 / fps;
+            int interval = 1000 / 120;
+
+            Console.CursorVisible = false;
+
+            int screenWidth = w * 2 + 5;
+            int screenHeight = h * 2 + 5;
+
+            if(Console.WindowWidth< screenWidth)
+            {
+                Console.WindowWidth = screenWidth;
+            }
+
+            if (Console.WindowHeight < screenHeight)
+            {
+                Console.WindowHeight = screenHeight;
+            }
+
+            Console.Clear();
+            Console.WriteLine(mz.m_gen.GetType().Name + " [" + w + ", " + h + "]");
 
             mz.Generate(w, h);
 
-            Console.WindowWidth = w * 2 + 10;
-            Console.WindowHeight = h * 2 + 5;
-
             foreach (string snapshot in mz.m_snapshots)
             {
-                string draw = snapshot;
-
-                draw = draw.Replace(Cell.State.Wall.ToString(), "█");
-                draw = draw.Replace(Cell.State.None.ToString(), "░");
-                draw = draw.Replace(",", "");
-
-                Console.Clear();
-                Console.WriteLine(draw);
-
-                Thread.Sleep(20);
+                DrawMaze(snapshot);
+                Thread.Sleep(interval);
             }
+        }
+
+        static void DrawMaze(string draw)
+        {
+            draw = draw.Replace(Cell.State.Wall.ToString(), "█");
+            draw = draw.Replace(Cell.State.Curr.ToString(), "▓");
+            draw = draw.Replace(Cell.State.None.ToString(), "⠀");
+            draw = draw.Replace(",", "");
+
+            Console.SetCursorPosition(0, 0);
+
+            Console.WriteLine();
+            Console.WriteLine(draw);
         }
     }
 }

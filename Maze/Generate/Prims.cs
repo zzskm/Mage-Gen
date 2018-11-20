@@ -40,6 +40,7 @@ public class Prims : MazeGenerator
             Mark(curr);
         }
 
+        SetCurr(Cell.invalid);
         m_owner.TakeSnapshot();
 
         return m_grid;
@@ -47,6 +48,8 @@ public class Prims : MazeGenerator
 
     public void Mark(Cell curr)
     {
+        SetCurr(curr);
+
         m_grid.AddState(curr, Cell.State.Visited);
 
         Cell[] neighbors = m_grid.FindNeighbors(curr, st => st == Cell.State.None);

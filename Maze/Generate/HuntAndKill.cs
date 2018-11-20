@@ -9,6 +9,9 @@
         base.Generate(w, h);
 
         Cell curr = m_grid.GetRandom();
+        SetCurr(curr);
+
+        m_owner.TakeSnapshot();
 
         while (curr.IsValid())
         {
@@ -16,6 +19,7 @@
             curr = Hunt();
         }
 
+        SetCurr(Cell.invalid);
         m_owner.TakeSnapshot();
 
         return m_grid;
@@ -35,6 +39,7 @@
             curr = next;
             next = m_grid.ChoiceNeighbor(curr);
 
+            SetCurr(curr);
             m_owner.TakeSnapshot();
         }
     }
@@ -49,6 +54,9 @@
             {
                 continue;
             }
+
+            SetCurr(curr);
+            m_owner.TakeSnapshot();
 
             Cell next = m_grid.ChoiceNeighbor(curr, st => st != Cell.State.None);
 

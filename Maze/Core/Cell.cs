@@ -17,6 +17,7 @@
         Visited = 1 << 5,
         Marked = 1 << 6,
 
+        Curr = 1 << 8,
         Wall = 1 << 9,
     }
 

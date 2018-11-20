@@ -87,10 +87,12 @@ public class Kruskals : MazeGenerator
                 m_grid.AddState(curr, dir);
                 m_grid.AddState(next, Cell.ToOppositeDir(dir));
 
+                SetCurr(curr);
                 m_owner.TakeSnapshot();
             }
         }
 
+        SetCurr(Cell.invalid);
         m_owner.TakeSnapshot();
 
         return m_grid;
