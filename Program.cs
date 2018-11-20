@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading;
 
 namespace Maze_Gen
 {
@@ -10,10 +11,10 @@ namespace Maze_Gen
 
             Maze mz = new Maze();
 
-            mz.m_gen = new Kruskals();
-            //mz.m_gen = new Prims();
-            //mz.m_gen = new RecursiveBacktracking();
-            //mz.m_gen = new HuntAndKill();
+            mz.m_gen = new Kruskals(mz);
+            //mz.m_gen = new Prims(mz);
+            //mz.m_gen = new RecursiveBacktracking(mz);
+            //mz.m_gen = new HuntAndKill(mz);
 
             Console.WriteLine(mz.m_gen.GetType().Name);
 
@@ -27,13 +28,22 @@ namespace Maze_Gen
 
             mz.Generate(w, h);
 
-            string draw = mz.m_grid.ToString();
+            Console.WindowWidth = w * 2 + 10;
+            Console.WindowHeight = h * 2 + 5;
 
-            draw = draw.Replace(Cell.State.Wall.ToString(), "█");
-            draw = draw.Replace(Cell.State.None.ToString(), "░");
-            draw = draw.Replace(",", "");
+            foreach (string snapshot in mz.m_snapshots)
+            {
+                string draw = snapshot;
 
-            Console.WriteLine(draw);
+                draw = draw.Replace(Cell.State.Wall.ToString(), "█");
+                draw = draw.Replace(Cell.State.None.ToString(), "░");
+                draw = draw.Replace(",", "");
+
+                Console.Clear();
+                Console.WriteLine(draw);
+
+                Thread.Sleep(20);
+            }
         }
     }
 }

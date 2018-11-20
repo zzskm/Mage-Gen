@@ -1,5 +1,9 @@
 ﻿public class HuntAndKill : MazeGenerator
 {
+    public HuntAndKill(Maze owner) : base(owner)
+    {
+    }
+
     public override Grid Generate(int w, int h)
     {
         base.Generate(w, h);
@@ -11,6 +15,8 @@
             Walk(curr);
             curr = Hunt();
         }
+
+        m_owner.TakeSnapshot();
 
         return m_grid;
     }
@@ -28,6 +34,8 @@
 
             curr = next;
             next = m_grid.ChoiceNeighbor(curr);
+
+            m_owner.TakeSnapshot();
         }
     }
 
@@ -55,6 +63,8 @@
             m_grid.AddState(next, Cell.ToOppositeDir(dir));
 
             curr.state = m_grid[curr];
+
+            m_owner.TakeSnapshot();
 
             return curr;
         }

@@ -5,7 +5,7 @@ public class Prims : MazeGenerator
     private System.Random m_rnd;
     public readonly List<int> m_frontiers;
 
-    public Prims()
+    public Prims(Maze owner) : base(owner)
     {
         m_rnd = new System.Random();
         m_frontiers = new List<int>();
@@ -33,10 +33,14 @@ public class Prims : MazeGenerator
 
                 m_grid.AddState(curr, dir);
                 m_grid.AddState(next, Cell.ToOppositeDir(dir));
+
+                m_owner.TakeSnapshot();
             }
 
             Mark(curr);
         }
+
+        m_owner.TakeSnapshot();
 
         return m_grid;
     }

@@ -1,10 +1,17 @@
 ﻿public class RecursiveBacktracking : MazeGenerator
 {
+    public RecursiveBacktracking(Maze owner) : base(owner)
+    {
+    }
+
     public override Grid Generate(int w, int h)
     {
         base.Generate(w, h);
 
         CarvePassages(m_grid.GetRandom());
+
+        m_owner.TakeSnapshot();
+
         return m_grid;
     }
 
@@ -27,6 +34,8 @@
 
                 m_grid.AddState(curr, dir);
                 m_grid.AddState(next, Cell.ToOppositeDir(dir));
+
+                m_owner.TakeSnapshot();
 
                 CarvePassages(next);
             }

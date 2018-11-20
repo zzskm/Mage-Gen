@@ -1,5 +1,9 @@
-﻿public class Maze
+﻿using System.Collections.Generic;
+
+public class Maze
 {
+    public readonly List<string> m_snapshots = new List<string>();
+
     public MazeGenerator m_gen;
 
     public Grid m_grid;
@@ -9,39 +13,15 @@
 
     public void Generate(int w, int h)
     {
-        Grid grid = m_gen.Generate(w, h);
+        m_snapshots.Clear();
 
-        m_grid = new Grid(grid.Width * 2 + 1, grid.Height * 2 + 1);
-        m_grid.Fill(Cell.State.Wall);
+        m_gen.Generate(w, h);
+        m_grid = m_gen.Draw();
+    }
 
-        for (int i = 0; i < grid.Length; ++i)
-        {
-            Cell cell = grid.GetCell(i);
-
-            cell.x = cell.x * 2 + 1;
-            cell.y = cell.y * 2 + 1;
-
-            m_grid.SetState(cell.x, cell.y, Cell.State.None);
-
-            if ((cell.state & Cell.State.W) != 0)
-            {
-                m_grid.SetState(cell.x - 1, cell.y, Cell.State.None);
-            }
-
-            if ((cell.state & Cell.State.E) != 0)
-            {
-                m_grid.SetState(cell.x + 1, cell.y, Cell.State.None);
-            }
-
-            if ((cell.state & Cell.State.N) != 0)
-            {
-                m_grid.SetState(cell.x, cell.y - 1, Cell.State.None);
-            }
-
-            if ((cell.state & Cell.State.S) != 0)
-            {
-                m_grid.SetState(cell.x, cell.y + 1, Cell.State.None);
-            }
-        }
+    public void TakeSnapshot()
+    {
+        Grid grid = m_gen.Draw();
+        m_snapshots.Add(grid.ToString());
     }
 }

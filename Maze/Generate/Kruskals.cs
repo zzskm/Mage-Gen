@@ -7,7 +7,7 @@ public class Kruskals : MazeGenerator
 
     private int[] m_sets;
 
-    public Kruskals()
+    public Kruskals(Maze owner) : base(owner)
     {
         m_rnd = new System.Random();
         m_edges = new List<Cell>();
@@ -86,8 +86,12 @@ public class Kruskals : MazeGenerator
 
                 m_grid.AddState(curr, dir);
                 m_grid.AddState(next, Cell.ToOppositeDir(dir));
+
+                m_owner.TakeSnapshot();
             }
         }
+
+        m_owner.TakeSnapshot();
 
         return m_grid;
     }
